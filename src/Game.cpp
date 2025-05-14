@@ -62,7 +62,9 @@ void Game::Run() {
     state->LoadAssets();
 
     while (!state->QuitRequested()) {
-        state->Update(0); // sem deltaTime por enquanto
+        float dt = 0.033f; // 33ms ~ 30 FPS, pode melhorar usando SDL_GetTicks para delta real
+
+        state->Update(dt);
         state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(33);

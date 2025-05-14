@@ -1,20 +1,25 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include "Sprite.h"
-#include "Music.h"
+#include <vector>
+#include <memory>
+#include "GameObject.h"
 
 class State {
 public:
     State();
+    ~State();
+
     void LoadAssets();
     void Update(float dt);
     void Render();
+
     bool QuitRequested();
 
+    void AddObject(GameObject* go);
+
 private:
-    Sprite bg;
-    Music music;
+    std::vector<std::unique_ptr<GameObject>> objectArray;
     bool quitRequested;
 };
 

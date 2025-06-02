@@ -7,6 +7,7 @@
 #include "TileSet.h"
 #include "TileMap.h"
 #include "GameObject.h"
+#include "InputManager.h"
 
 
 State::State() : quitRequested(false) {
@@ -31,20 +32,9 @@ State::State() : quitRequested(false) {
     );
 
     // Criar zombie
-    GameObject* zombie = new GameObject();
-    zombie->box = Rect(600, 450, 0, 0); // tamanho ajustado pelo sprite
-    Zombie* zombieComponent = new Zombie(*zombie);
-    zombie->AddComponent(zombieComponent);
-
-    Animator* animator = new Animator(*zombie);
-    animator->AddAnimation("walking", Animation(0, 3, 0.1f));
-    animator->AddAnimation("dead", Animation(5, 5, 0.0f));
-    animator->SetAnimation("walking");
-    zombie->AddComponent(animator);
-
+    
     AddObject(background);
     AddObject(mapObject);
-    AddObject(zombie);
 
 }
 
@@ -58,6 +48,35 @@ void State::LoadAssets() {
 }
 
 void State::Update(float dt) {
+
+    InputManager& input = InputManager::GetInstance();
+    input.Update();
+    if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY)) {
+        quitRequested = true;
+        return;
+    }
+
+
+
+    if (input.KeyPress(SDLK_SPACE)) {
+        GameObject* zombie = new GameObject();
+        int mx = input.GetMouseX();// + Camera::pos.x;
+        int my = input.GetMouseY();// + Camera::pos.y;
+        zombie->box = Rect(mx, my, 0, 0);
+
+        Zombie* zombieComponent = new Zombie(*zombie);
+        zombie->AddComponent(zombieComponent);
+
+        Animator* animator = new Animator(*zombie);
+        animator->AddAnimation("walking", Animation(0, 3, 0.1f));
+        animator->AddAnimation("dead", Animation(5, 5, 0.0f));
+        animator->SetAnimation("walking");
+        zombie->AddComponent(animator);
+        
+        AddObject(zombie);
+}
+
+
     for (auto& go : objectArray)
         go->Update(dt);
 

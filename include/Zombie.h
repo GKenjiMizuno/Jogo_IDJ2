@@ -14,6 +14,8 @@ public:
     bool Is(std::string type) override;
 
 private:
+    Sound hitSound;
+
     int hitpoints;
     Sound deathSound;
 

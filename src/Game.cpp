@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Resources.h"
+#include "InputManager.h"
 #include <iostream>
 
 Game* Game::instance = nullptr;
@@ -47,6 +48,9 @@ Game::Game(const char* title, int width, int height) {
     }
 
     state = new State();
+    frameStart = 0;
+    dt = 0.0f;
+
 }
 
 Game::~Game() {
@@ -63,8 +67,8 @@ void Game::Run() {
     state->LoadAssets();
 
     while (!state->QuitRequested()) {
-        float dt = 0.033f; // 33ms ~ 30 FPS, pode melhorar usando SDL_GetTicks para delta real
-
+        CalculateDeltaTime();  // ← Aqui no início do loop
+        InputManager::GetInstance().Update();
         state->Update(dt);
         state->Render();
         SDL_RenderPresent(renderer);
@@ -76,6 +80,18 @@ void Game::Run() {
     Resources::ClearMusics();
     Resources::ClearSounds();
 
+}
+
+void Game::CalculateDeltaTime(){
+
+    int currentTime = SDL_GetTicks();
+    dt = (currentTime - frameStart) / 1000.0f;
+    frameStart = currentTime;
+
+}
+
+float Game::GetDeltaTime() {
+    return dt;
 }
 
 Game& Game::GetInstance() {

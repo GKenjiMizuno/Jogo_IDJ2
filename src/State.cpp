@@ -50,7 +50,6 @@ void State::LoadAssets() {
 void State::Update(float dt) {
 
     InputManager& input = InputManager::GetInstance();
-    input.Update();
     if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY)) {
         quitRequested = true;
         return;

@@ -19,6 +19,7 @@ State::State() : quitRequested(false) {
     GameObject* background = new GameObject();
     background->box = Rect(0, 0, 1200, 900);
     SpriteRenderer* bgSprite = new SpriteRenderer(*background, "resources/img/Background.png");
+    bgSprite->SetCameraFollower(true);
     background->AddComponent(bgSprite);
 
     // Cria o Tileset

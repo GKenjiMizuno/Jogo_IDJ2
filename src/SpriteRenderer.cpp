@@ -2,10 +2,11 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-SpriteRenderer::SpriteRenderer(GameObject& associated) : Component(associated), sprite() {}
+
+SpriteRenderer::SpriteRenderer(GameObject& associated) : Component(associated), sprite(), cameraFollower(false){}
 
 SpriteRenderer::SpriteRenderer(GameObject& associated, std::string file, int frameCountW, int frameCountH)
-    : Component(associated), sprite(file, frameCountW, frameCountH) {
+    : Component(associated), sprite(file, frameCountW, frameCountH),cameraFollower(false) {
     associated.box.w = sprite.GetWidth();
     associated.box.h = sprite.GetHeight();
     SetFrame(0);
@@ -30,16 +31,22 @@ void SpriteRenderer::SetFrame(int frame) {
 void SpriteRenderer::Update(float dt) {
     // vazio
 }
+void SpriteRenderer::SetCameraFollower(bool follow) {
+    cameraFollower = follow;
+}
 
-#include "Camera.h"
+
 
 void SpriteRenderer::Render() {
-    sprite.Render(
-        (int)(associated.box.x - Camera::pos.x),
-        (int)(associated.box.y - Camera::pos.y),
-        (int)associated.box.w,
-        (int)associated.box.h
-    );
+    int x = (int)associated.box.x;
+    int y = (int)associated.box.y;
+
+    if (!cameraFollower) {
+        x -= Camera::pos.x;
+        y -= Camera::pos.y;
+    }
+
+    sprite.Render(x, y, (int)associated.box.w, (int)associated.box.h);
 }
 
 

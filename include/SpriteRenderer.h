@@ -7,8 +7,8 @@
 
 class SpriteRenderer : public Component {
 public:
-    SpriteRenderer(GameObject& associated);
-    SpriteRenderer(GameObject& associated, std::string file, int frameCountW=1, int frameCountH=1);
+    SpriteRenderer(std::weak_ptr<GameObject> associated);
+    SpriteRenderer(std::weak_ptr<GameObject> associated, std::string file, int frameCountW = 1, int frameCountH = 1);
     ~SpriteRenderer();
 
     void Open(std::string file);

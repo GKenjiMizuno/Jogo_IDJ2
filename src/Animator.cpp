@@ -2,13 +2,30 @@
 #include "SpriteRenderer.h"
 #include "GameObject.h"
 
-Animator::Animator(GameObject& associated) :
-    Component(associated),
-    frameStart(0),
-    frameEnd(0),
-    frameTime(0),
-    currentFrame(0),
-    timeElapsed(0) {}
+Animator::Animator(std::weak_ptr<GameObject> associated)
+    : Component(associated), timeElapsed(0), currentFrame(0), frameStart(0), frameEnd(0), frameTime(0.0f) {}
+
+void Animator::AddAnimation(std::string name, Animation anim) {
+    animations[name] = anim;
+}
+
+void Animator::SetAnimation(std::string name) {
+    if (animations.count(name) == 0) return;
+
+    Animation anim = animations[name];
+    currentAnimation = name;
+    frameStart = anim.frameStart;
+    frameEnd = anim.frameEnd;
+    frameTime = anim.frameTime;
+    currentFrame = frameStart;
+
+    if (auto go = associated.lock()) {
+        SpriteRenderer* sr = (SpriteRenderer*)go->GetComponent("SpriteRenderer");
+        if (sr) {
+            sr->SetFrame(currentFrame);
+        }
+    }
+}
 
 void Animator::Update(float dt) {
     if (frameTime <= 0) return;
@@ -17,40 +34,23 @@ void Animator::Update(float dt) {
     if (timeElapsed > frameTime) {
         timeElapsed -= frameTime;
         currentFrame++;
-        if (currentFrame > frameEnd)
+        if (currentFrame > frameEnd) {
             currentFrame = frameStart;
+        }
 
-        SpriteRenderer* sr = (SpriteRenderer*)associated.GetComponent("SpriteRenderer");
-        if (sr)
-            sr->SetFrame(currentFrame);
+        if (auto go = associated.lock()) {
+            SpriteRenderer* sr = (SpriteRenderer*)go->GetComponent("SpriteRenderer");
+            if (sr) {
+                sr->SetFrame(currentFrame);
+            }
+        }
     }
 }
 
 void Animator::Render() {
-    // vazio
+    // Nada a renderizar diretamente
 }
 
 bool Animator::Is(std::string type) {
     return (type == "Animator");
-}
-
-void Animator::SetAnimation(std::string name) {
-    auto it = animations.find(name);
-    if (it != animations.end()) {
-        frameStart = it->second.frameStart;
-        frameEnd = it->second.frameEnd;
-        frameTime = it->second.frameTime;
-        currentFrame = frameStart;
-        timeElapsed = 0;
-
-        SpriteRenderer* sr = (SpriteRenderer*)associated.GetComponent("SpriteRenderer");
-        if (sr)
-            sr->SetFrame(currentFrame);
-    }
-}
-
-void Animator::AddAnimation(std::string name, Animation anim) {
-    if (animations.find(name) == animations.end()) {
-        animations.emplace(name, anim);
-    }
 }

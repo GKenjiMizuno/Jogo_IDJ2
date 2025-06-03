@@ -2,6 +2,7 @@
 #define GAMEOBJECT_H
 
 #include <vector>
+#include <memory>
 #include <string>
 #include "Component.h"
 #include "Rect.h"
@@ -11,10 +12,11 @@ public:
     GameObject();
     ~GameObject();
 
+    void Start();
     void Update(float dt);
     void Render();
 
-    bool IsDead();
+    bool IsDead() const;
     void RequestDelete();
 
     void AddComponent(Component* cpt);
@@ -25,8 +27,9 @@ public:
     Rect box;
 
 private:
-    std::vector<Component*> components;
+    std::vector<std::shared_ptr<Component>> components;
     bool isDead;
+    bool started;
 };
 
 #endif

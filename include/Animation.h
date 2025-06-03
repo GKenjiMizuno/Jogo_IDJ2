@@ -3,6 +3,8 @@
 
 class Animation {
 public:
+    Animation() : frameStart(0), frameEnd(0), frameTime(0.0f) {}  // ✅ construtor padrão
+
     Animation(int frameStart, int frameEnd, float frameTime) :
         frameStart(frameStart), frameEnd(frameEnd), frameTime(frameTime) {}
 

@@ -7,7 +7,7 @@
 
 class Zombie : public Component {
 public:
-    Zombie(GameObject& associated);
+    Zombie(std::weak_ptr<GameObject> associated);
 
     void Damage(int damage);
     void Update(float dt) override;

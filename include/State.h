@@ -13,14 +13,18 @@ public:
     void LoadAssets();
     void Update(float dt);
     void Render();
-
+    void Start(); 
     bool QuitRequested();
 
     void AddObject(GameObject* go);
+    std::weak_ptr<GameObject> AddObject(std::shared_ptr<GameObject> go); // para permitir uso de weak_ptr
+    std::weak_ptr<GameObject> GetObjectPtr(GameObject* go); // localizar um objeto
+
 
 private:
-    std::vector<std::unique_ptr<GameObject>> objectArray;
+    std::vector<std::shared_ptr<GameObject>> objectArray;
     bool quitRequested;
+    bool started;
 };
 
 #endif

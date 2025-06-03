@@ -8,7 +8,7 @@
 
 class Animator : public Component {
 public:
-    Animator(GameObject& associated);
+    Animator(std::weak_ptr<GameObject> associated);
 
     void Update(float dt) override;
     void Render() override;
@@ -23,6 +23,7 @@ private:
     int frameEnd;
     float frameTime;
     int currentFrame;
+    std::string currentAnimation;
     float timeElapsed;
 };
 

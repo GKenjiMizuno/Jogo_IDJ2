@@ -65,6 +65,7 @@ Game::~Game() {
 
 void Game::Run() {
     state->LoadAssets();
+    state->Start();
 
     while (!state->QuitRequested()) {
         CalculateDeltaTime();  // ← Aqui no início do loop

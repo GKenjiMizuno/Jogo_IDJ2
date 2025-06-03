@@ -1,10 +1,10 @@
 #include "TileMap.h"
-#include "Game.h"
+#include "GameObject.h"
 #include "Camera.h"
 #include <fstream>
 #include <iostream>
 
-TileMap::TileMap(GameObject& associated, std::string file, TileSet* tileSet)
+TileMap::TileMap(std::weak_ptr<GameObject> associated, std::string file, TileSet* tileSet)
     : Component(associated), tileSet(tileSet) {
     Load(file);
 }
@@ -28,45 +28,54 @@ void TileMap::Load(std::string file) {
 }
 
 void TileMap::SetTileSet(TileSet* tileSet_) {
-    tileSet.reset(tileSet_);
+    tileSet = tileSet_;
 }
 
 int& TileMap::At(int x, int y, int z) {
     return tileMatrix[(z * mapHeight * mapWidth) + (y * mapWidth) + x];
 }
 
-
 void TileMap::RenderLayer(int layer) {
+    if (!tileSet) return;
+
     int tileW = tileSet->GetTileWidth();
     int tileH = tileSet->GetTileHeight();
 
-    for (int y = 0; y < mapHeight; y++) {
-        for (int x = 0; x < mapWidth; x++) {
-            int tileIndex = At(x, y, layer);
-            if (tileIndex < 0) continue;
+    if (auto go = associated.lock()) {
+        for (int y = 0; y < mapHeight; y++) {
+            for (int x = 0; x < mapWidth; x++) {
+                int tileIndex = At(x, y, layer);
+                if (tileIndex < 0) continue;
 
-            float renderX = (float)(associated.box.x + x * tileW - Camera::pos.x);
-            float renderY = (float)(associated.box.y + y * tileH - Camera::pos.y);
-            tileSet->RenderTile(tileIndex, renderX, renderY);
+                float renderX = (float)(go->box.x + x * tileW - Camera::pos.x);
+                float renderY = (float)(go->box.y + y * tileH - Camera::pos.y);
+                tileSet->RenderTile(tileIndex, renderX, renderY);
+            }
         }
     }
 }
-
-
 
 void TileMap::Render() {
     for (int layer = 0; layer < mapDepth; layer++)
         RenderLayer(layer);
 }
 
-int TileMap::GetWidth() const { return mapWidth; }
-int TileMap::GetHeight() const { return mapHeight; }
-int TileMap::GetDepth() const { return mapDepth; }
-
 void TileMap::Update(float dt) {
-    // nada por enquanto
+    // Não faz nada ainda
 }
 
 bool TileMap::Is(std::string type) {
     return (type == "TileMap");
+}
+
+int TileMap::GetWidth() const {
+    return mapWidth;
+}
+
+int TileMap::GetHeight() const {
+    return mapHeight;
+}
+
+int TileMap::GetDepth() const {
+    return mapDepth;
 }

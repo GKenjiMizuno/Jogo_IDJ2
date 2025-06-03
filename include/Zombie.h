@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "Sound.h"
+#include "Timer.h"
 
 class Zombie : public Component {
 public:
@@ -15,7 +16,10 @@ public:
 
 private:
     Sound hitSound;
-
+    Timer hitTimer;
+    Timer deathTimer;
+    bool hit;
+    bool dead;
     int hitpoints;
     Sound deathSound;
 

@@ -8,6 +8,8 @@
 #include "TileMap.h"
 #include "GameObject.h"
 #include "InputManager.h"
+#include "Timer.h"
+#include "Game.h"
 
 
 State::State() : quitRequested(false) {
@@ -56,7 +58,6 @@ void State::Update(float dt) {
     }
 
 
-
     if (input.KeyPress(SDLK_SPACE)) {
         GameObject* zombie = new GameObject();
         int mx = input.GetMouseX();// + Camera::pos.x;
@@ -69,6 +70,7 @@ void State::Update(float dt) {
         Animator* animator = new Animator(*zombie);
         animator->AddAnimation("walking", Animation(0, 3, 0.1f));
         animator->AddAnimation("dead", Animation(5, 5, 0.0f));
+        animator->AddAnimation("hit", Animation(4,4,0.0f));
         animator->SetAnimation("walking");
         zombie->AddComponent(animator);
         

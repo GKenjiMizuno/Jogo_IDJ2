@@ -2,8 +2,9 @@
 #include "SpriteRenderer.h"
 #include "GameObject.h"
 #include "InputManager.h"
+#include "Animator.h"
 
-Zombie::Zombie(GameObject& associated) : Component(associated), hitpoints(100) {
+Zombie::Zombie(GameObject& associated) : Component(associated), hitpoints(100),hit(false),dead(false) {
     SpriteRenderer* sr = new SpriteRenderer(associated, "resources/img/Enemy.png", 3, 2);
     sr->SetFrame(1);
     associated.AddComponent(sr);
@@ -13,17 +14,46 @@ Zombie::Zombie(GameObject& associated) : Component(associated), hitpoints(100) {
 }
 
 void Zombie::Damage(int damage) {
+
+    if (dead) return;
+
+
     hitpoints -= damage;
     hitSound.Play(1); // tocar som de hit sempre que levar dano
     if (hitpoints <= 0) {
-        SpriteRenderer* sr = (SpriteRenderer*)associated.GetComponent("SpriteRenderer");
-        if (sr) sr->SetFrame(5);
+        dead = true;
+        Animator* animator = (Animator*)associated.GetComponent("Animator");
+        if (animator) animator->SetAnimation("dead");
         deathSound.Play(1);
+        deathTimer.Restart();
 
+    } else {
+        hit = true;
+        hitTimer.Restart();
+        Animator* animator = (Animator*)associated.GetComponent("Animator");
+        if (animator) animator -> SetAnimation("hit");
     }
 }
 
 void Zombie::Update(float dt) {
+
+    if (dead) {
+        deathTimer.Update(dt);
+        if (deathTimer.Get() > 5.0f){
+            associated.RequestDelete();
+        }
+        return;
+    }
+
+    hitTimer.Update(dt);
+
+    if (hit && hitTimer.Get() > 0.5f) {
+        Animator* animator = (Animator*)associated.GetComponent("Animator");
+        if (animator) animator->SetAnimation("walking");
+        hit = false;
+    }
+
+
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON)) {
         int mx = InputManager::GetInstance().GetMouseX();// + Camera::pos.x;
         int my = InputManager::GetInstance().GetMouseY();// + Camera::pos.y;

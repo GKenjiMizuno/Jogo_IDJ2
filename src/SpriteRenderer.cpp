@@ -1,5 +1,6 @@
 #include "SpriteRenderer.h"
 #include "GameObject.h"
+#include "Camera.h"
 
 SpriteRenderer::SpriteRenderer(GameObject& associated) : Component(associated), sprite() {}
 
@@ -30,9 +31,17 @@ void SpriteRenderer::Update(float dt) {
     // vazio
 }
 
+#include "Camera.h"
+
 void SpriteRenderer::Render() {
-    sprite.Render((int)associated.box.x, (int)associated.box.y, (int)associated.box.w, (int)associated.box.h);
+    sprite.Render(
+        (int)(associated.box.x - Camera::pos.x),
+        (int)(associated.box.y - Camera::pos.y),
+        (int)associated.box.w,
+        (int)associated.box.h
+    );
 }
+
 
 bool SpriteRenderer::Is(std::string type) {
     return (type == "SpriteRenderer");

@@ -1,5 +1,6 @@
 #include "TileMap.h"
 #include "Game.h"
+#include "Camera.h"
 #include <fstream>
 #include <iostream>
 
@@ -44,8 +45,8 @@ void TileMap::RenderLayer(int layer) {
             int tileIndex = At(x, y, layer);
             if (tileIndex < 0) continue;
 
-            float renderX = (float)(associated.box.x + x * tileW);
-            float renderY = (float)(associated.box.y + y * tileH);
+            float renderX = (float)(associated.box.x + x * tileW - Camera::pos.x);
+            float renderY = (float)(associated.box.y + y * tileH - Camera::pos.y);
             tileSet->RenderTile(tileIndex, renderX, renderY);
         }
     }

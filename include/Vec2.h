@@ -16,6 +16,8 @@ class Vec2 {
         float Inclination() const;
         float Distance(const Vec2& v) const;
         Vec2 Rotate(float angle) const;
+        Vec2& operator+=(const Vec2& v);
+        Vec2& operator-=(const Vec2& v);
 
 
 };

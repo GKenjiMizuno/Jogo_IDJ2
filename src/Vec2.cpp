@@ -33,6 +33,19 @@ float Vec2::Distance(const Vec2& v) const {
     return (*this - v).Magnitude();
 }
 
+Vec2& Vec2::operator+=(const Vec2& v) {
+    x += v.x;
+    y += v.y;
+    return *this;
+}
+
+Vec2& Vec2::operator-=(const Vec2& v) {
+    x -= v.x;
+    y -= v.y;
+    return *this;
+}
+
+
 float Vec2::Inclination() const {
     return atan2(y, x);
 }

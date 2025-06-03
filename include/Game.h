@@ -12,6 +12,8 @@ public:
     SDL_Renderer* GetRenderer();
     State& GetState();
     float GetDeltaTime();
+    int GetWidth();
+    int GetHeight();
 
 private:
     Game(const char* title, int width, int height);
@@ -22,6 +24,10 @@ private:
     void CalculateDeltaTime();
     int frameStart;
     float dt;
+    int width;
+    int height;
+
+
 };
 
 #endif

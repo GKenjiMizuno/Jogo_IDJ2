@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "Animator.h"
+#include "Camera.h"
 
 Zombie::Zombie(GameObject& associated) : Component(associated), hitpoints(100),hit(false),dead(false) {
     SpriteRenderer* sr = new SpriteRenderer(associated, "resources/img/Enemy.png", 3, 2);
@@ -55,8 +56,8 @@ void Zombie::Update(float dt) {
 
 
     if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON)) {
-        int mx = InputManager::GetInstance().GetMouseX();// + Camera::pos.x;
-        int my = InputManager::GetInstance().GetMouseY();// + Camera::pos.y;
+        int mx = InputManager::GetInstance().GetMouseX() + Camera::pos.x;
+        int my = InputManager::GetInstance().GetMouseY() + Camera::pos.y;
 
         if (associated.box.Contains({(float)mx, (float)my})) {
             Damage(10);  // valor arbitrário

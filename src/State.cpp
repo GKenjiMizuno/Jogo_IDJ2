@@ -10,6 +10,7 @@
 #include "InputManager.h"
 #include "Timer.h"
 #include "Game.h"
+#include "Camera.h"
 
 
 State::State() : quitRequested(false) {
@@ -51,6 +52,7 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
 
+    Camera::Update(dt);
     InputManager& input = InputManager::GetInstance();
     if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY)) {
         quitRequested = true;
@@ -60,8 +62,8 @@ void State::Update(float dt) {
 
     if (input.KeyPress(SDLK_SPACE)) {
         GameObject* zombie = new GameObject();
-        int mx = input.GetMouseX();// + Camera::pos.x;
-        int my = input.GetMouseY();// + Camera::pos.y;
+        int mx = input.GetMouseX() + Camera::pos.x;
+        int my = input.GetMouseY() + Camera::pos.y;
         zombie->box = Rect(mx, my, 0, 0);
 
         Zombie* zombieComponent = new Zombie(*zombie);

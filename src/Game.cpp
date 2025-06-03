@@ -5,7 +5,7 @@
 
 Game* Game::instance = nullptr;
 
-Game::Game(const char* title, int width, int height) {
+Game::Game(const char* title, int width, int height)  : width(width), height(height){
     if (instance != nullptr) {
         std::cerr << "Erro: Game já instanciado!" << std::endl;
         exit(1);
@@ -93,6 +93,15 @@ void Game::CalculateDeltaTime(){
 float Game::GetDeltaTime() {
     return dt;
 }
+
+int Game::GetWidth() {
+    return width; // Ou qualquer valor usado na criação da janela
+}
+
+int Game::GetHeight() {
+    return height; // Idem
+}
+
 
 Game& Game::GetInstance() {
     if (!instance)
